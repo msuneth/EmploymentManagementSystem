@@ -1,5 +1,7 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -66,7 +68,7 @@ public class EmployeeManagementSystem {
         ArrayList<Employee> empList= readDataFile();
         for (Employee emp: empList
              ) {
-           System.out.println(emp.empIndex+","+emp.name+","+emp.empNo+","+emp.DateOfBirth+","+emp.email+","+emp.phoneNo+","+emp.division+","+emp.JoinedDate+","+emp.status);
+           System.out.println(emp.name+","+emp.empNo+","+emp.DateOfBirth+","+emp.email+","+emp.phoneNo+","+emp.division+","+emp.JoinedDate+","+emp.status);
         }
     }
 
@@ -89,13 +91,60 @@ public class EmployeeManagementSystem {
 
 
     public void searchEmployee(){
-
+        System.out.print("Enter Employee Name to search:");
+        Scanner searchPrefix = new Scanner(System.in);
+        String searchName = searchPrefix.nextLine();
+        ArrayList<Employee> empList= readDataFile();
+        for (Employee emp: empList
+        ) if(emp.name.contains(searchName) ){
+            System.out.println(emp.name+","+emp.empNo+","+emp.DateOfBirth+","+emp.email+","+emp.phoneNo+","+emp.division+","+emp.JoinedDate+","+emp.status);
+        }
     }
 
     public void addEmployee(){
+        ArrayList<Employee> currentEmpList= readDataFile();
+        int empCount= currentEmpList.size();
+        String[] newUser = getNewEmployeeInfo();
+        newUser[0]= String.valueOf((empCount+1));
+        //Employee newEmp= new Employee(newUser);
+        //currentEmpList.add(newEmp);
+        writeToDataFile(newUser);
 
     }
 
+    public String[]  getNewEmployeeInfo(){
+        Scanner getEmpInfo = new Scanner(System.in);
+        String[] empInfo = new String[9];
+        System.out.print("Enter Employee No:");
+        empInfo[1]=getEmpInfo.nextLine();
+        System.out.print("\nEnter Name:");
+        empInfo[2]=getEmpInfo.nextLine();
+        System.out.print("\nEnter Date of Birth(yyyy-mm-dd):");
+        empInfo[3]=getEmpInfo.nextLine();
+        System.out.print("\nEnter Phone No:");
+        empInfo[4]=getEmpInfo.nextLine();
+        System.out.print("\nEnter Email:");
+        empInfo[5]=getEmpInfo.nextLine();
+        empInfo[6]="active";
+        System.out.print("\nEnter Division:");
+        empInfo[7]=getEmpInfo.nextLine();
+        System.out.print("\nEnter Joined Date(yyyy-mm-dd):");
+        empInfo[8]=getEmpInfo.nextLine();
+        return empInfo;
+    }
+
+    public void writeToDataFile(String[] userInfo){
+        try {
+            FileWriter fw = new FileWriter("src\\datafile.txt",true);
+            String userInfoStr= String.join(",",userInfo);
+            fw.append("\n"+userInfoStr);
+            //fw.write(userInfoStr);
+            fw.close();
+            System.out.println("Employee added successfully");
+        }catch (IOException e){
+            System.out.println("Unable to add employee information");
+        }
+    }
     public void editEmployee(){
 
     }
